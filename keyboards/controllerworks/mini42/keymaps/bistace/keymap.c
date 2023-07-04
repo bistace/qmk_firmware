@@ -139,10 +139,8 @@ int cur_dance (tap_dance_state_t *state) {
     } else {
       return SINGLE_HOLD;
     }
-  } else if (state->count == 2) {
-    return DOUBLE_TAP;
-  }
-  else return 8;
+  } 
+  else return SINGLE_TAP;
 }
 
 //Initialize tap structure associated with example tap dance key
@@ -166,16 +164,6 @@ void A_finished (tap_dance_state_t *state, void *user_data) {
     case SINGLE_HOLD: 
       layer_on(4); 
       break;
-    case DOUBLE_TAP: 
-      //check to see if the layer is already set
-      if (layer_state_is(4)) {
-        //if already set, then switch it off
-        layer_off(4);
-      } else { 
-        //if not already set, then switch the layer on
-        layer_on(4);
-      }
-      break;
   }
 }
 
@@ -187,16 +175,6 @@ void O_finished (tap_dance_state_t *state, void *user_data) {
       break;
     case SINGLE_HOLD: 
       layer_on(4); 
-      break;
-    case DOUBLE_TAP: 
-      //check to see if the layer is already set
-      if (layer_state_is(4)) {
-        //if already set, then switch it off
-        layer_off(4);
-      } else { 
-        //if not already set, then switch the layer on
-        layer_on(4);
-      }
       break;
   }
 }

@@ -17,6 +17,8 @@
 
 #pragma once
 
+#define TAPPING_TERM 200
+
 #define WS2812_PIO_USE_PIO1
 #define RGBLED_NUM 54
 #define RGB_MATRIX_LED_COUNT RGBLED_NUM
