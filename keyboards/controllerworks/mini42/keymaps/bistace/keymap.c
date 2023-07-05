@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include QMK_KEYBOARD_H
+#include "keymap_steno.h"
 
 // Layer names
 enum {
@@ -23,6 +24,7 @@ enum {
   _NUMPAD = 2,
   _SYMBOLS = 3,
   _NUMBAR = 4,
+  _PLOVER = 5,
 };
 
 // Tap dance keys
@@ -31,6 +33,11 @@ enum {
   O_LAYR = 1,
   R_CTRL = 2,
   I_CTRL = 3, 
+};
+
+enum layer_keycode {
+    BASE,
+    PLOVER,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -48,7 +55,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [_ARROWS] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      QK_BOOT,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,                        KC_NO, KC_QUOT,   KC_UP,   KC_NO,   KC_NO,   KC_NO,
+      QK_BOOT,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   TO(_PLOVER),                        KC_NO, KC_QUOT,   KC_UP,   KC_NO,   KC_NO,   KC_NO,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_TRNS,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,                       KC_NUHS, KC_LEFT, KC_DOWN,KC_RIGHT,   KC_NO,   KC_NO,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
@@ -94,13 +101,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                       //`--------------------------'  `--------------------------'
   ),
   
-/*  [5] = LAYOUT_split_3x6_3(
-    XXXXXXX, KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                          KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_LBRC,
-    XXXXXXX, KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                          KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-    EXT_PLV, XXXXXXX, XXXXXXX, KC_C,    KC_V,    XXXXXXX,                       XXXXXXX, KC_N,    KC_M,    XXXXXXX, XXXXXXX, XXXXXXX
-),*/
-
-
+  [_PLOVER] = LAYOUT_split_3x6_3(
+    TO(_BASE), STN_N1,    STN_N2,    STN_N3,    STN_N4,     STN_N5,                STN_N6,    STN_N7,    STN_N8,    STN_N9,    STN_NA,      STN_NB,  
+      XXXXXXX, STN_S1,    STN_TL,    STN_PL,    STN_HL,    STN_ST1,                STN_FR,    STN_PR,    STN_LR,    STN_TR,    STN_DR,      STN_FN,
+      XXXXXXX, STN_S2,    STN_KL,    STN_WL,    STN_RL,    STN_ST2,                STN_RR,    STN_BR,    STN_GR,    STN_SR,    STN_ZR,     STN_PWR,
+                                            KC_NO,   STN_A,   STN_O,      STN_E,  STN_U,    KC_NO
+  
+  ),
 };
 
 typedef struct {
