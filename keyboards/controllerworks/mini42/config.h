@@ -17,7 +17,7 @@
 
 #pragma once
 
-#define TAPPING_TERM 200
+#define PERMISSIVE_HOLD
 
 #define WS2812_PIO_USE_PIO1
 #define RGBLED_NUM 54

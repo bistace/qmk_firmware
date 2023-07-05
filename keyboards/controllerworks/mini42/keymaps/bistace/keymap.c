@@ -131,116 +131,92 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   
 */
 
-//Determine the current tap dance state
-int cur_dance (tap_dance_state_t *state) {
-  if (state->count == 1) {
-    if (!state->pressed) {
-      return SINGLE_TAP;
-    } else {
-      return SINGLE_HOLD;
+typedef struct {
+    uint16_t tap;
+    uint16_t hold;
+    uint16_t held;
+} tap_dance_tap_hold_t;
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    tap_dance_action_t *action;
+
+    switch (keycode) {
+        case TD(A_LAYR):  // list all tap dance keycodes with tap-hold configurations
+            action = &tap_dance_actions[TD_INDEX(keycode)];
+            if (!record->event.pressed && action->state.count && !action->state.finished) {
+                tap_dance_tap_hold_t *tap_hold = (tap_dance_tap_hold_t *)action->user_data;
+                tap_code16(tap_hold->tap);
+            }
+            break;
     }
-  } 
-  else return SINGLE_TAP;
+    return true;
 }
 
-//Initialize tap structure associated with example tap dance key
-static tap a_o_ql_tap_state = {
-  .is_press_action = true,
-  .state = 0
-};
+void tap_dance_tap_hold_finished(tap_dance_state_t *state, void *user_data) {
+    tap_dance_tap_hold_t *tap_hold = (tap_dance_tap_hold_t *)user_data;
 
-static tap r_i_ql_tap_state = {
-  .is_press_action = true,
-  .state = 0
-};
-
-//Functions that control what our tap dance key does
-void A_finished (tap_dance_state_t *state, void *user_data) {
-  a_o_ql_tap_state.state = cur_dance(state);
-  switch (a_o_ql_tap_state.state) {
-    case SINGLE_TAP: 
-      tap_code(KC_Q); 
-      break;
-    case SINGLE_HOLD: 
-      layer_on(4); 
-      break;
-  }
-}
-
-void O_finished (tap_dance_state_t *state, void *user_data) {
-  a_o_ql_tap_state.state = cur_dance(state);
-  switch (a_o_ql_tap_state.state) {
-    case SINGLE_TAP: 
-      tap_code(KC_O); 
-      break;
-    case SINGLE_HOLD: 
-      layer_on(4); 
-      break;
-  }
-}
-
-void R_ctrl_finished (tap_dance_state_t *state, void *user_data) {
-  r_i_ql_tap_state.state = cur_dance(state);
-    switch (r_i_ql_tap_state.state) {
-        case SINGLE_TAP:
-            register_code16(KC_R);
-            break;
-        case SINGLE_HOLD:
-            register_mods(MOD_BIT(KC_LCTL)); // For a layer-tap key, use `layer_on(_MY_LAYER)` here
-            break;
-        default:
-            break;
+    if (state->pressed) {
+        if (state->count == 1
+#ifndef PERMISSIVE_HOLD
+            && !state->interrupted
+#endif
+        ) {
+            register_code16(tap_hold->hold);
+            tap_hold->held = tap_hold->hold;
+        } else {
+            register_code16(tap_hold->tap);
+            tap_hold->held = tap_hold->tap;
+        }
     }
 }
 
-void I_ctrl_finished (tap_dance_state_t *state, void *user_data) {
-  r_i_ql_tap_state.state = cur_dance(state);
-    switch (r_i_ql_tap_state.state) {
-        case SINGLE_TAP:
-            register_code16(KC_I);
-            break;
-        case SINGLE_HOLD:
-            register_mods(MOD_BIT(KC_LCTL)); // For a layer-tap key, use `layer_on(_MY_LAYER)` here
-            break;
-        default:
-            break;
+void layer_tap_dance_tap_hold_finished(tap_dance_state_t *state, void *user_data) {
+    tap_dance_tap_hold_t *tap_hold = (tap_dance_tap_hold_t *)user_data;
+
+    if (state->pressed) {
+        if (state->count == 1
+#ifndef PERMISSIVE_HOLD
+            && !state->interrupted
+#endif
+        ) {
+            //register_code16(tap_hold->hold);
+            layer_on(tap_hold->hold);
+            tap_hold->held = tap_hold->hold;
+        } else {
+            register_code16(tap_hold->tap);
+            tap_hold->held = tap_hold->tap;
+        }
     }
 }
 
-void A_O_reset (tap_dance_state_t *state, void *user_data) {
-  //if the key was held down and now is released then switch off the layer
-  if (a_o_ql_tap_state.state==SINGLE_HOLD) {
-    layer_off(4);
-  }
-  a_o_ql_tap_state.state = 0;
+void tap_dance_tap_hold_reset(tap_dance_state_t *state, void *user_data) {
+    tap_dance_tap_hold_t *tap_hold = (tap_dance_tap_hold_t *)user_data;
+
+    if (tap_hold->held) {
+        unregister_code16(tap_hold->held);
+        tap_hold->held = 0;
+    }
 }
 
-void R_ctrl_reset (tap_dance_state_t *state, void *user_data) {
-  switch (r_i_ql_tap_state.state) {
-    case SINGLE_TAP:
-      unregister_code16(KC_R);
-      break;
-    case SINGLE_HOLD:
-      unregister_mods(MOD_BIT(KC_LCTL)); // for a layer-tap key, use `layer_off(_MY_LAYER)` here
-      break;
-  }
+void layer_tap_dance_tap_hold_reset(tap_dance_state_t *state, void *user_data) {
+    tap_dance_tap_hold_t *tap_hold = (tap_dance_tap_hold_t *)user_data;
+
+    if (tap_hold->held) {
+        layer_off(tap_hold->hold);
+        tap_hold->held = 0;
+    }
 }
 
-void I_ctrl_reset (tap_dance_state_t *state, void *user_data) {
-  switch (r_i_ql_tap_state.state) {
-    case SINGLE_TAP:
-      unregister_code16(KC_I);
-      break;
-    case SINGLE_HOLD:
-      unregister_mods(MOD_BIT(KC_LCTL)); // for a layer-tap key, use `layer_off(_MY_LAYER)` here
-      break;
-  }
-}
+#define ACTION_TAP_DANCE_TAP_HOLD(tap, hold) \
+    { .fn = {NULL, tap_dance_tap_hold_finished, tap_dance_tap_hold_reset}, .user_data = (void *)&((tap_dance_tap_hold_t){tap, hold, 0}), }
+#define ACTION_TAP_DANCE_TAP_HOLD_LAYER(tap, hold) \
+    { .fn = {NULL, layer_tap_dance_tap_hold_finished, layer_tap_dance_tap_hold_reset}, .user_data = (void *)&((tap_dance_tap_hold_t){tap, hold, 0}), }
+
 
 //Associate our tap dance key with its functionality
 tap_dance_action_t tap_dance_actions[] = {
-  [A_LAYR] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, A_finished, A_O_reset),
-  [O_LAYR] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, O_finished, A_O_reset),
-  [R_CTRL] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, R_ctrl_finished, R_ctrl_reset),
-  [I_CTRL] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, I_ctrl_finished, I_ctrl_reset),
+  [A_LAYR] = ACTION_TAP_DANCE_TAP_HOLD_LAYER(KC_Q, 4),
+  [O_LAYR] = ACTION_TAP_DANCE_TAP_HOLD_LAYER(KC_O, 4),
+  [R_CTRL] = ACTION_TAP_DANCE_TAP_HOLD(KC_R, KC_LCTL),
+  [I_CTRL] = ACTION_TAP_DANCE_TAP_HOLD(KC_Q, MO(4)),
 };
