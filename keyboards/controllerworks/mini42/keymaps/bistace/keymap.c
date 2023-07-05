@@ -16,20 +16,16 @@
  */
 #include QMK_KEYBOARD_H
 
-
-typedef struct {
-  bool is_press_action;
-  int state;
-} tap;
-
-//Define a type for as many tap dance states as you need
+// Layer names
 enum {
-  SINGLE_TAP = 1,
-  SINGLE_HOLD = 2,
-  DOUBLE_TAP = 3
+  _BASE = 0,
+  _ARROWS = 1,
+  _NUMPAD = 2,
+  _SYMBOLS = 3,
+  _NUMBAR = 4,
 };
 
-//Our custom tap dance key; add any other tap dance keys to this enum 
+// Tap dance keys
 enum {
   A_LAYR = 0,
   O_LAYR = 1,
@@ -37,29 +33,20 @@ enum {
   I_CTRL = 3, 
 };
 
-//Declare the functions to be used with your tap dance key(s)
-//Function associated with all tap dances
-int cur_dance (tap_dance_state_t *state);
-
-//Functions associated with individual tap dances
-void ql_finished (tap_dance_state_t *state, void *user_data);
-void ql_reset (tap_dance_state_t *state, void *user_data);
-
-
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-  [0] = LAYOUT_split_3x6_3(
+  [_BASE] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
        KC_TAB,    KC_A,    KC_W,    KC_F,    KC_P,    KC_B,                         KC_H,    KC_J,    KC_L,    KC_U,   KC_Y,   KC_BSPC,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-        MO(1),    TD(A_LAYR),    TD(R_CTRL),    KC_S,    KC_T,    KC_G,                      KC_SCLN,    KC_N,    KC_E,    TD(I_CTRL),   TD(O_LAYR),   KC_LBRC,
+        MO(_ARROWS),    TD(A_LAYR),    TD(R_CTRL),    KC_S,    KC_T,    KC_G,                      KC_SCLN,    KC_N,    KC_E,    TD(I_CTRL),   TD(O_LAYR),   KC_LBRC,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_LSFT,    KC_Z,    KC_X,    KC_C,    KC_D,    KC_V,                         KC_K,    KC_M, KC_COMM,  KC_DOT, KC_SLSH,  KC_RSFT,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                            KC_NO,   MO(2),  KC_SPC,     KC_ENT,   MO(3),   KC_NO
+                                            KC_NO,   MO(_NUMPAD),  KC_SPC,     KC_ENT,   MO(_SYMBOLS),   KC_NO
                                       //`--------------------------'  `--------------------------'
   ),
 
-  [1] = LAYOUT_split_3x6_3(
+  [_ARROWS] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
       QK_BOOT,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,                        KC_NO, KC_QUOT,   KC_UP,   KC_NO,   KC_NO,   KC_NO,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
@@ -71,7 +58,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                       //`--------------------------'  `--------------------------'
   ),
 
-  [2] = LAYOUT_split_3x6_3(
+  [_NUMPAD] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
         KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,                        KC_NO, KC_AMPR, KC_ASTR, KC_LPRN,   KC_NO,   KC_NO,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
@@ -83,7 +70,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                       //`--------------------------'  `--------------------------'
   ),
 
-  [3] = LAYOUT_split_3x6_3(
+  [_SYMBOLS] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
        KC_ESC, RALT(KC_0), KC_RBRC, KC_5, KC_MINS, RALT(KC_7),                        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
@@ -95,7 +82,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                       //`--------------------------'  `--------------------------'
   ),
 
-  [4] = LAYOUT_split_3x6_3(
+  [_NUMBAR] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
         KC_NO,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                         KC_6,    KC_7,    KC_8,    KC_9,    KC_0,   KC_NO,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
@@ -115,21 +102,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 
 };
-
-/*
-  [2] = LAYOUT_split_3x6_3(
-  //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,                        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,
-  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,                        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,
-  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,                        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,
-  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                            KC_NO,   KC_NO,   KC_NO,      KC_NO,   KC_NO,   KC_NO
-                                      //`--------------------------'  `--------------------------'
-  ),
-  
-*/
 
 typedef struct {
     uint16_t tap;
@@ -264,11 +236,25 @@ void mod_tap_dance_tap_hold_reset(tap_dance_state_t *state, void *user_data) {
 #define ACTION_TAP_DANCE_TAP_HOLD_MOD(tap, hold) \
     { .fn = {NULL, mod_tap_dance_tap_hold_finished, mod_tap_dance_tap_hold_reset}, .user_data = (void *)&((tap_dance_tap_hold_t){tap, hold, 0}), }
 
-
 //Associate our tap dance key with its functionality
 tap_dance_action_t tap_dance_actions[] = {
-  [A_LAYR] = ACTION_TAP_DANCE_TAP_HOLD_LAYER(KC_Q, 4),
-  [O_LAYR] = ACTION_TAP_DANCE_TAP_HOLD_LAYER(KC_O, 4),
+  [A_LAYR] = ACTION_TAP_DANCE_TAP_HOLD_LAYER(KC_Q, _NUMBAR),
+  [O_LAYR] = ACTION_TAP_DANCE_TAP_HOLD_LAYER(KC_O, _NUMBAR),
   [R_CTRL] = ACTION_TAP_DANCE_TAP_HOLD_MOD(KC_R, KC_LCTL),
-  [I_CTRL] = ACTION_TAP_DANCE_TAP_HOLD_MOD(KC_Q, KC_RCTL),
+  [I_CTRL] = ACTION_TAP_DANCE_TAP_HOLD_MOD(KC_I, KC_RCTL),
 };
+
+/*
+  [2] = LAYOUT_split_3x6_3(
+  //,-----------------------------------------------------.                    ,-----------------------------------------------------.
+        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,                        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,                        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,                        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,
+  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
+                                            KC_NO,   KC_NO,   KC_NO,      KC_NO,   KC_NO,   KC_NO
+                                      //`--------------------------'  `--------------------------'
+  ),
+  
+*/
