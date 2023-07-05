@@ -148,6 +148,27 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 tap_code16(tap_hold->tap);
             }
             break;
+        case TD(O_LAYR):  // list all tap dance keycodes with tap-hold configurations
+            action = &tap_dance_actions[TD_INDEX(keycode)];
+            if (!record->event.pressed && action->state.count && !action->state.finished) {
+                tap_dance_tap_hold_t *tap_hold = (tap_dance_tap_hold_t *)action->user_data;
+                tap_code16(tap_hold->tap);
+            }
+            break;
+        case TD(R_CTRL):  // list all tap dance keycodes with tap-hold configurations
+            action = &tap_dance_actions[TD_INDEX(keycode)];
+            if (!record->event.pressed && action->state.count && !action->state.finished) {
+                tap_dance_tap_hold_t *tap_hold = (tap_dance_tap_hold_t *)action->user_data;
+                tap_code16(tap_hold->tap);
+            }
+            break;
+        case TD(I_CTRL):  // list all tap dance keycodes with tap-hold configurations
+            action = &tap_dance_actions[TD_INDEX(keycode)];
+            if (!record->event.pressed && action->state.count && !action->state.finished) {
+                tap_dance_tap_hold_t *tap_hold = (tap_dance_tap_hold_t *)action->user_data;
+                tap_code16(tap_hold->tap);
+            }
+            break;
     }
     return true;
 }
@@ -189,6 +210,26 @@ void layer_tap_dance_tap_hold_finished(tap_dance_state_t *state, void *user_data
     }
 }
 
+void mod_tap_dance_tap_hold_finished(tap_dance_state_t *state, void *user_data) {
+    tap_dance_tap_hold_t *tap_hold = (tap_dance_tap_hold_t *)user_data;
+
+    if (state->pressed) {
+        if (state->count == 1
+#ifndef PERMISSIVE_HOLD
+            && !state->interrupted
+#endif
+        ) {
+            //register_code16(tap_hold->hold);
+            //layer_on(tap_hold->hold);
+            register_mods(MOD_BIT(tap_hold->hold));
+            tap_hold->held = tap_hold->hold;
+        } else {
+            register_code16(tap_hold->tap);
+            tap_hold->held = tap_hold->tap;
+        }
+    }
+}
+
 void tap_dance_tap_hold_reset(tap_dance_state_t *state, void *user_data) {
     tap_dance_tap_hold_t *tap_hold = (tap_dance_tap_hold_t *)user_data;
 
@@ -207,16 +248,27 @@ void layer_tap_dance_tap_hold_reset(tap_dance_state_t *state, void *user_data) {
     }
 }
 
+void mod_tap_dance_tap_hold_reset(tap_dance_state_t *state, void *user_data) {
+    tap_dance_tap_hold_t *tap_hold = (tap_dance_tap_hold_t *)user_data;
+
+    if (tap_hold->held) {
+        unregister_mods(MOD_BIT(tap_hold->hold));
+        tap_hold->held = 0;
+    }
+}
+
 #define ACTION_TAP_DANCE_TAP_HOLD(tap, hold) \
     { .fn = {NULL, tap_dance_tap_hold_finished, tap_dance_tap_hold_reset}, .user_data = (void *)&((tap_dance_tap_hold_t){tap, hold, 0}), }
 #define ACTION_TAP_DANCE_TAP_HOLD_LAYER(tap, hold) \
     { .fn = {NULL, layer_tap_dance_tap_hold_finished, layer_tap_dance_tap_hold_reset}, .user_data = (void *)&((tap_dance_tap_hold_t){tap, hold, 0}), }
+#define ACTION_TAP_DANCE_TAP_HOLD_MOD(tap, hold) \
+    { .fn = {NULL, mod_tap_dance_tap_hold_finished, mod_tap_dance_tap_hold_reset}, .user_data = (void *)&((tap_dance_tap_hold_t){tap, hold, 0}), }
 
 
 //Associate our tap dance key with its functionality
 tap_dance_action_t tap_dance_actions[] = {
   [A_LAYR] = ACTION_TAP_DANCE_TAP_HOLD_LAYER(KC_Q, 4),
   [O_LAYR] = ACTION_TAP_DANCE_TAP_HOLD_LAYER(KC_O, 4),
-  [R_CTRL] = ACTION_TAP_DANCE_TAP_HOLD(KC_R, KC_LCTL),
-  [I_CTRL] = ACTION_TAP_DANCE_TAP_HOLD(KC_Q, MO(4)),
+  [R_CTRL] = ACTION_TAP_DANCE_TAP_HOLD_MOD(KC_R, KC_LCTL),
+  [I_CTRL] = ACTION_TAP_DANCE_TAP_HOLD_MOD(KC_Q, KC_RCTL),
 };
