@@ -49,7 +49,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_LSFT,    KC_Z,    KC_X,    KC_C,    KC_D,    KC_V,                         KC_K,    KC_M, KC_COMM,  KC_DOT, KC_SLSH,  KC_RSFT,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                            KC_NO,   MO(_NUMPAD),  KC_SPC,     KC_ENT,   MO(_SYMBOLS),   KC_NO
+                                            KC_NO,   MO(_NUMPAD),  KC_SPC,     KC_ENT,   MO(_SYMBOLS),   KC_LALT
                                       //`--------------------------'  `--------------------------'
   ),
 
@@ -103,8 +103,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   
   [_PLOVER] = LAYOUT_split_3x6_3(
     TO(_BASE), STN_N1,    STN_N2,    STN_N3,    STN_N4,     STN_N5,                STN_N6,    STN_N7,    STN_N8,    STN_N9,    STN_NA,      STN_NB,  
-      XXXXXXX, STN_S1,    STN_TL,    STN_PL,    STN_HL,    STN_ST1,                STN_FR,    STN_PR,    STN_LR,    STN_TR,    STN_DR,      STN_FN,
-      XXXXXXX, STN_S2,    STN_KL,    STN_WL,    STN_RL,    STN_ST2,                STN_RR,    STN_BR,    STN_GR,    STN_SR,    STN_ZR,     STN_PWR,
+      XXXXXXX, STN_S1,    STN_TL,    STN_PL,    STN_HL,    STN_ST1,                STN_ST1,   STN_FR,    STN_PR,    STN_LR,    STN_TR,    STN_DR,
+      XXXXXXX, STN_S2,    STN_KL,    STN_WL,    STN_RL,    STN_ST2,                STN_ST2,   STN_RR,    STN_BR,    STN_GR,    STN_SR,    STN_ZR,
                                             KC_NO,   STN_A,   STN_O,      STN_E,  STN_U,    KC_NO
   
   ),
