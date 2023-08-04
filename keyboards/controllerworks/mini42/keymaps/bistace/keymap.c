@@ -55,7 +55,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [_ARROWS] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      QK_BOOT,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   TO(_PLOVER),                        KC_NO, KC_QUOT,   KC_UP,   KC_NO,   KC_NO,   KC_NO,
+      QK_BOOT,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   TO(_PLOVER),                        KC_NO, KC_QUOT,   KC_UP,   KC_NO,   KC_NO,   KC_DEL,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_TRNS,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,                       KC_NUHS, KC_LEFT, KC_DOWN,KC_RIGHT,   KC_NO,   KC_NO,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
@@ -81,7 +81,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
        KC_ESC, RALT(KC_0), KC_RBRC, KC_5, KC_MINS, RALT(KC_7),                        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-        KC_NO, KC_EQL, RALT(KC_3), RALT(KC_5), RALT(KC_MINS), LSFT(KC_EQL),                        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,
+        KC_NO, KC_EQL, RALT(KC_3), RALT(KC_5), RALT(KC_MINS), LSFT(KC_EQL),                        KC_NO,   KC_ESC,   KC_NO,   KC_NO,   KC_NO,   KC_NO,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
         KC_NO, RALT(KC_8), RALT(KC_6), RALT(KC_4), RALT(KC_EQL), RALT(KC_2),                        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
